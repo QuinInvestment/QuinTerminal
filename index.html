@@ -38,7 +38,7 @@
     }
     .app{
       display:grid;
-      grid-template-columns: 270px 1fr;
+      grid-template-columns: 290px 1fr;
       grid-template-rows: 70px 1fr;
       height:100vh;
       gap:14px;
@@ -55,10 +55,11 @@
       border:1px solid var(--border);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
+      min-width:0;
     }
     .brand{
       display:flex; align-items:center; gap:12px;
-      min-width: 240px;
+      min-width: 260px;
     }
     .logo{
       width:40px; height:40px; border-radius:12px;
@@ -67,12 +68,14 @@
     }
     .brand h1{font-size:16px; margin:0; font-weight:600; letter-spacing:.4px}
     .brand .sub{font-size:12px; color:var(--muted); margin-top:2px}
+
     .topbar{
       display:flex;
       align-items:center;
       gap:12px;
       width:100%;
       justify-content:flex-end;
+      min-width:0;
     }
     .pill{
       display:flex;
@@ -108,6 +111,7 @@
       background:linear-gradient(135deg, rgba(61,169,255,.30), rgba(155,255,221,.16));
       border-color:rgba(61,169,255,.28);
     }
+
     aside{
       grid-row:2;
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
@@ -154,6 +158,7 @@
       border-color:rgba(61,169,255,.42);
       background:linear-gradient(135deg, rgba(61,169,255,.22), rgba(155,255,221,.08));
     }
+
     .card{
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
       border:1px solid var(--border);
@@ -180,7 +185,7 @@
       gap:6px;
       width:100%;
     }
-    input, select, textarea{
+    input, select{
       width:100%;
       border-radius:12px;
       border:1px solid var(--border);
@@ -191,7 +196,8 @@
       font-family:inherit;
       font-size:13px;
     }
-    input:focus, select:focus, textarea:focus{border-color:rgba(61,169,255,.55)}
+    input:focus, select:focus{border-color:rgba(61,169,255,.55)}
+
     main{
       grid-row:2;
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
@@ -217,19 +223,29 @@
     }
     .tabsbar .title h3{margin:0; font-size:14px; font-weight:600}
     .tabsbar .title small{color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:70ch}
+
     .content{
       padding:14px;
       overflow:auto;
       height:100%;
     }
+
     .grid2{display:grid; grid-template-columns: 1.2fr .8fr; gap:14px}
     .grid2eq{display:grid; grid-template-columns: 1fr 1fr; gap:14px}
+    .grid3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px}
+
+    @media (max-width: 1200px){
+      .grid3{grid-template-columns:1fr}
+      .grid2{grid-template-columns:1fr}
+      .grid2eq{grid-template-columns:1fr}
+    }
     @media (max-width: 1100px){
       .app{grid-template-columns: 1fr; grid-template-rows: 70px auto 1fr; overflow:auto}
       aside{grid-row:2}
       main{grid-row:3}
       body{overflow:auto}
     }
+
     .tvbox{
       border:1px solid var(--border);
       border-radius:var(--radius);
@@ -238,6 +254,8 @@
       min-height:360px;
     }
     .tvbox.sm{min-height:260px}
+    .tvbox.md{min-height:320px}
+
     .list{
       display:flex;
       flex-direction:column;
@@ -264,6 +282,7 @@
       color:var(--muted);
       font-size:12px;
     }
+
     .statusDot{
       width:10px; height:10px; border-radius:50%;
       background:var(--danger);
@@ -277,7 +296,37 @@
       display:flex; gap:10px; align-items:center; justify-content:space-between;
     }
     .hr{height:1px; background:var(--border); margin:10px 0}
-    #issMap, #maritimeMap{height:360px; border-radius:var(--radius); overflow:hidden}
+    .note{color:var(--muted); font-size:12px; line-height:1.4}
+
+    #airMap, #maritimeMap{height:420px; border-radius:var(--radius); overflow:hidden}
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+      color:var(--text);
+    }
+    th, td{
+      padding:8px 8px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      text-align:left;
+      vertical-align:top;
+    }
+    th{color:var(--muted); font-weight:600}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(10,20,42,.45);
+      color:var(--text);
+      font-size:12px;
+      font-weight:600;
+      white-space:nowrap;
+    }
+    .badge.good{border-color:rgba(155,255,221,.25)}
   </style>
 </head>
 
@@ -288,7 +337,7 @@
         <div class="logo"></div>
         <div>
           <h1>Quinterminal</h1>
-          <div class="sub">Markets · Vol · News · Space · Maritime</div>
+          <div class="sub">Markets · Vol · FX/Rates · Macro · Air Traffic · Maritime</div>
         </div>
       </div>
 
@@ -300,10 +349,12 @@
             <small id="connText">initialisation…</small>
           </div>
         </div>
+
         <div class="pill">
           <div style="font-weight:600; font-size:12px">PARIS</div>
           <small id="clock">--:--:--</small>
         </div>
+
         <button class="btn primary" id="refreshBtn">Refresh</button>
       </div>
     </header>
@@ -313,9 +364,12 @@
       <div class="nav" id="nav">
         <button data-tab="markets" class="active">Marchés <span>F1</span></button>
         <button data-tab="vol">Volatilité <span>F2</span></button>
-        <button data-tab="news">Actualités <span>F3</span></button>
-        <button data-tab="space">Espace <span>F4</span></button>
-        <button data-tab="maritime">Maritime <span>F5</span></button>
+        <button data-tab="fxrates">FX &amp; Taux <span>F3</span></button>
+        <button data-tab="commodcrypto">Commodities &amp; Crypto <span>F4</span></button>
+        <button data-tab="macro">Macro Calendar <span>F5</span></button>
+        <button data-tab="news">Actualités <span>F6</span></button>
+        <button data-tab="air">Trafic aérien <span>F7</span></button>
+        <button data-tab="maritime">Maritime <span>F8</span></button>
       </div>
 
       <div class="nav-title">Commandes</div>
@@ -323,18 +377,26 @@
         <div class="row" style="justify-content:space-between; align-items:flex-start">
           <div>
             <div style="font-weight:600; font-size:13px">Raccourcis</div>
-            <div class="note">F1–F5 pour changer de module. Entrée sur un symbole pour charger le chart.</div>
+            <div class="note">F1–F8 change de module. Charge un symbole pour le chart principal.</div>
           </div>
           <div class="kbd">F1</div>
         </div>
+
         <div class="hr"></div>
+
         <div class="field">
-          <label class="muted" for="symbolInput">Symbole TradingView (ex: SP:SPX, NASDAQ:NDX, CBOE:VIX)</label>
+          <label class="muted" for="symbolInput">Symbole (TradingView) pour le chart principal</label>
           <input id="symbolInput" value="SP:SPX" autocomplete="off" />
         </div>
+
         <div class="row" style="margin-top:10px">
           <button class="btn" id="loadSymbolBtn" style="flex:1">Load</button>
           <button class="btn" id="resetSymbolBtn">Reset</button>
+        </div>
+
+        <div class="hr"></div>
+        <div class="note">
+          Widgets: TradingView (charts/quotes/news). Trafic aérien: OpenSky (proxy). RSS: proxy CORS public.
         </div>
       </div>
     </aside>
@@ -343,14 +405,17 @@
       <div class="tabsbar">
         <div class="title">
           <h3 id="tabTitle">Marchés</h3>
-          <small id="tabSubtitle">Indices majeurs + watchlist</small>
+          <small id="tabSubtitle">Indices majeurs + chart + quote</small>
         </div>
         <div class="row">
-          <div class="kbd">F1</div><div class="kbd">F2</div><div class="kbd">F3</div><div class="kbd">F4</div><div class="kbd">F5</div>
+          <div class="kbd">F1</div><div class="kbd">F2</div><div class="kbd">F3</div><div class="kbd">F4</div>
+          <div class="kbd">F5</div><div class="kbd">F6</div><div class="kbd">F7</div><div class="kbd">F8</div>
         </div>
       </div>
 
       <div class="content">
+
+        <!-- MARKETS -->
         <section id="tab-markets">
           <div class="grid2">
             <div class="card">
@@ -359,13 +424,15 @@
             </div>
             <div class="card">
               <div class="split">
-                <h2>Chart</h2>
+                <h2>Chart principal</h2>
                 <div class="note">Symbole: <span id="activeSymbolLabel">SP:SPX</span></div>
               </div>
               <div class="tvbox" id="tvChart"></div>
             </div>
           </div>
+
           <div style="height:14px"></div>
+
           <div class="grid2eq">
             <div class="card">
               <h2>Ticker Tape</h2>
@@ -378,170 +445,846 @@
           </div>
         </section>
 
+        <!-- VOL -->
         <section id="tab-vol" style="display:none">
-          <div class="grid2eq">
+          <div class="grid3">
             <div class="card">
               <h2>VIX (CBOE)</h2>
-              <div class="tvbox" id="tvVix"></div>
+              <div class="tvbox md" id="tvVix"></div>
             </div>
             <div class="card">
-              <h2>VSTOXX / V2X (Europe)</h2>
-              <div class="tvbox" id="tvV2X"></div>
+              <h2>V2X (Europe)</h2>
+              <div class="tvbox md" id="tvV2X"></div>
+            </div>
+            <div class="card">
+              <h2>Vol / Risk Watchlist</h2>
+              <div class="tvbox md" id="tvRiskQuotes"></div>
             </div>
           </div>
         </section>
 
+        <!-- FX & RATES -->
+        <section id="tab-fxrates" style="display:none">
+          <div class="grid2">
+            <div class="card">
+              <h2>FX &amp; Rates (Market Data)</h2>
+              <div class="tvbox" id="tvFxRatesQuotes"></div>
+            </div>
+            <div class="card">
+              <h2>Chart FX (EURUSD)</h2>
+              <div class="tvbox" id="tvEurusd"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- COMMOD & CRYPTO -->
+        <section id="tab-commodcrypto" style="display:none">
+          <div class="grid2">
+            <div class="card">
+              <h2>Futures / Commodities</h2>
+              <div class="tvbox" id="tvCommodQuotes"></div>
+            </div>
+            <div class="card">
+              <h2>Crypto</h2>
+              <div class="tvbox" id="tvCryptoQuotes"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MACRO -->
+        <section id="tab-macro" style="display:none">
+          <div class="grid2">
+            <div class="card">
+              <h2>Economic Calendar</h2>
+              <div class="tvbox" id="tvEconCalendar"></div>
+            </div>
+            <div class="card">
+              <h2>Macro Watchlist</h2>
+              <div class="tvbox" id="tvMacroQuotes"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- NEWS -->
         <section id="tab-news" style="display:none">
           <div class="grid2eq">
             <div class="card">
-              <h2>News Marchés</h2>
+              <div class="split">
+                <h2>News (RSS)</h2>
+                <select id="newsFeedSelect">
+                  <option value="markets">Marchés</option>
+                  <option value="aviation">Aviation</option>
+                  <option value="maritime">Maritime</option>
+                </select>
+              </div>
+              <div class="note" id="newsFeedNote" style="margin-top:6px"></div>
+              <div class="hr"></div>
               <div class="list" id="newsList"></div>
             </div>
+
             <div class="card">
               <h2>Brief</h2>
               <div class="note" id="newsStatus">—</div>
+              <div class="hr"></div>
+              <div class="field">
+                <label class="muted">Nombre d’articles</label>
+                <select id="newsCount">
+                  <option value="8">8</option>
+                  <option value="12" selected>12</option>
+                  <option value="20">20</option>
+                </select>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <button class="btn primary" id="refreshNewsBtn" style="flex:1">Refresh News</button>
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="tab-space" style="display:none">
-          <div class="grid2eq">
+        <!-- AIR TRAFFIC -->
+        <section id="tab-air" style="display:none">
+          <div class="grid2">
             <div class="card">
-              <h2>NASA APOD</h2>
-              <div class="note">Module d’origine (NASA/ISS) — peut être retiré.</div>
+              <div class="split">
+                <h2>Trafic aérien (live)</h2>
+                <div class="row">
+                  <button class="btn" id="refreshAirBtn">Refresh</button>
+                  <button class="btn" id="centerAirBtn">Center</button>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top:10px">
+                <div class="field" style="flex:1; min-width:220px">
+                  <label class="muted">Zone</label>
+                  <select id="airRegion">
+                    <option value="fr" selected>France</option>
+                    <option value="we">Europe Ouest</option>
+                    <option value="eu">Europe</option>
+                  </select>
+                </div>
+
+                <div class="field" style="flex:1; min-width:220px">
+                  <label class="muted">Filtre</label>
+                  <select id="airFilter">
+                    <option value="commercial" selected>Vols commerciaux (heuristique)</option>
+                    <option value="all">Tous les vols</option>
+                  </select>
+                </div>
+
+                <div class="field" style="flex:1; min-width:220px">
+                  <label class="muted">Auto-refresh</label>
+                  <select id="airAuto">
+                    <option value="off">Off</option>
+                    <option value="15" selected>15 sec</option>
+                    <option value="30">30 sec</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="note" id="airStatus" style="margin:10px 0 10px">—</div>
+              <div id="airMap"></div>
+              <div class="hr"></div>
+              <div class="note">
+                “Commercial (heuristique)” = callsign type compagnie (ex: AFR123, BAW5).
+              </div>
             </div>
+
             <div class="card">
-              <h2>ISS Live</h2>
-              <div id="issMap"></div>
+              <div class="split">
+                <h2>Top flights (vitesse)</h2>
+                <div class="badge good" id="airCountBadge">—</div>
+              </div>
+              <div class="hr"></div>
+
+              <div style="overflow:auto; max-height:520px">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Callsign</th>
+                      <th>Alt</th>
+                      <th>Speed</th>
+                      <th>Country</th>
+                    </tr>
+                  </thead>
+                  <tbody id="airTableBody"></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </section>
 
+        <!-- MARITIME -->
         <section id="tab-maritime" style="display:none">
-          <div class="grid2eq">
+          <div class="grid2">
             <div class="card">
-              <h2>Maritime Commerce Map</h2>
+              <div class="split">
+                <h2>Maritime Commerce Map (chokepoints)</h2>
+                <div class="row">
+                  <button class="btn" id="centerMaritimeBtn">Center</button>
+                  <button class="btn" id="refreshMaritimeNewsBtn">Refresh News</button>
+                </div>
+              </div>
+              <div class="note" style="margin:8px 0 10px">
+                Suez, Panama, Hormuz, Malacca, Bab-el-Mandeb, Gibraltar.
+              </div>
               <div id="maritimeMap"></div>
             </div>
+
             <div class="card">
-              <h2>Maritime News</h2>
+              <h2>Maritime News (RSS)</h2>
+              <div class="hr"></div>
               <div class="list" id="maritimeNewsList"></div>
             </div>
           </div>
         </section>
+
       </div>
     </main>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const state = { tab: "markets", symbol: "SP:SPX" };
+    const state = {
+      tab: "markets",
+      symbol: "SP:SPX",
+      airMap: null,
+      airLayer: null,
+      airAutoTimer: null,
+      maritimeMap: null
+    };
     const $ = (id) => document.getElementById(id);
+
+    function setConn(ok, text){
+      const dot = $("connDot");
+      dot.classList.toggle("ok", !!ok);
+      $("connText").textContent = text || (ok ? "ok" : "offline");
+    }
 
     function setTab(tab){
       state.tab = tab;
       const titles = {
-        markets: ["Marchés", "Indices majeurs + watchlist"],
-        vol: ["Volatilité", "VIX / V2X"],
-        news: ["Actualités", "Flux RSS"],
-        space: ["Espace", "NASA/ISS"],
-        maritime: ["Maritime", "Chokepoints + news"]
+        markets: ["Marchés", "Indices majeurs + chart + quote"],
+        vol: ["Volatilité", "VIX / V2X + radar risque"],
+        fxrates: ["FX & Taux", "Forex + yields"],
+        commodcrypto: ["Commodities & Crypto", "Futures + crypto"],
+        macro: ["Macro Calendar", "Calendrier économique + watchlist"],
+        news: ["Actualités", "RSS + brief"],
+        air: ["Trafic aérien", "OpenSky (proxy)"],
+        maritime: ["Maritime", "Chokepoints + RSS"]
       };
       $("tabTitle").textContent = titles[tab][0];
       $("tabSubtitle").textContent = titles[tab][1];
-      ["markets","vol","news","space","maritime"].forEach(t=>{
+
+      Object.keys(titles).forEach(t=>{
         $("tab-"+t).style.display = (t===tab) ? "" : "none";
       });
-      document.querySelectorAll("#nav button").forEach(b=>{
-        b.classList.toggle("active", b.dataset.tab===tab);
+      document.querySelectorAll("#nav button").forEach(b => {
+        b.classList.toggle("active", b.dataset.tab === tab);
       });
+
+      if (tab !== "air") stopAirAuto();
     }
 
-    function addTV(container, src, config){
+    function addTVScript(container, widgetSrc, config){
       container.innerHTML = "";
       const s = document.createElement("script");
       s.type = "text/javascript";
-      s.src = src;
+      s.src = widgetSrc;
       s.async = true;
       s.innerHTML = JSON.stringify(config);
       container.appendChild(s);
     }
 
+    function addTradingViewAdvancedChart(container, config){
+      addTVScript(container, "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js", config);
+    }
+
     function renderMarkets(){
-      addTV($("tvMarketOverview"), "https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js", {
-        colorTheme:"dark", dateRange:"12M", showChart:true, locale:"fr", isTransparent:true,
-        showSymbolLogo:true, showFloatingTooltip:true, width:"100%", height:"100%",
-        tabs:[{title:"US", symbols:[{s:"SP:SPX",d:"S&P 500"},{s:"NASDAQ:NDX",d:"Nasdaq 100"},{s:"DJ:DJI",d:"Dow Jones"},{s:"CBOE:VIX",d:"VIX"}]},
-              {title:"EU", symbols:[{s:"EURONEXT:PX1",d:"CAC 40"},{s:"XETR:DAX",d:"DAX"},{s:"EUREX:ESTX50",d:"Euro Stoxx 50"}]}]
-      });
+      addTVScript(
+        $("tvMarketOverview"),
+        "https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js",
+        {
+          colorTheme: "dark",
+          dateRange: "12M",
+          showChart: true,
+          locale: "fr",
+          isTransparent: true,
+          showSymbolLogo: true,
+          showFloatingTooltip: true,
+          width: "100%",
+          height: "100%",
+          tabs: [
+            { title: "US", symbols: [
+              { s: "SP:SPX", d: "S&P 500" },
+              { s: "NASDAQ:NDX", d: "Nasdaq 100" },
+              { s: "DJ:DJI", d: "Dow Jones" },
+              { s: "CBOE:VIX", d: "VIX" }
+            ]},
+            { title: "EU", symbols: [
+              { s: "EURONEXT:PX1", d: "CAC 40" },
+              { s: "XETR:DAX", d: "DAX" },
+              { s: "EUREX:ESTX50", d: "Euro Stoxx 50" }
+            ]}
+          ]
+        }
+      );
 
-      $("activeSymbolLabel").textContent = state.symbol;
-      addTV($("tvChart"), "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js", {
-        autosize:true, symbol:state.symbol, interval:"60", timezone:"Europe/Paris", theme:"dark",
-        style:"1", locale:"fr", enable_publishing:false, hide_top_toolbar:false, save_image:false,
-        support_host:"https://www.tradingview.com"
-      });
+      renderMainChart(state.symbol);
 
-      addTV($("tvTicker"), "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js", {
-        symbols:[{proName:"SP:SPX",title:"S&P 500"},{proName:"NASDAQ:NDX",title:"Nasdaq 100"},{proName:"EURONEXT:PX1",title:"CAC 40"},{proName:"CBOE:VIX",title:"VIX"}],
-        showSymbolLogo:true, isTransparent:true, displayMode:"adaptive", colorTheme:"dark", locale:"fr"
-      });
+      addTVScript(
+        $("tvTicker"),
+        "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js",
+        {
+          symbols: [
+            { proName: "SP:SPX", title: "S&P 500" },
+            { proName: "NASDAQ:NDX", title: "Nasdaq 100" },
+            { proName: "EURONEXT:PX1", title: "CAC 40" },
+            { proName: "XETR:DAX", title: "DAX" },
+            { proName: "CBOE:VIX", title: "VIX" }
+          ],
+          showSymbolLogo: true,
+          isTransparent: true,
+          displayMode: "adaptive",
+          colorTheme: "dark",
+          locale: "fr"
+        }
+      );
 
-      addTV($("tvSymbolOverview"), "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js", {
-        symbols:[[state.symbol]], chartOnly:false, width:"100%", height:"100%", locale:"fr", colorTheme:"dark", isTransparent:true
+      addTVScript(
+        $("tvSymbolOverview"),
+        "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js",
+        {
+          symbols: [[state.symbol]],
+          chartOnly: false,
+          width: "100%",
+          height: "100%",
+          locale: "fr",
+          colorTheme: "dark",
+          isTransparent: true
+        }
+      );
+    }
+
+    function renderMainChart(symbol){
+      $("activeSymbolLabel").textContent = symbol;
+      addTradingViewAdvancedChart($("tvChart"), {
+        autosize: true,
+        symbol,
+        interval: "60",
+        timezone: "Europe/Paris",
+        theme: "dark",
+        style: "1",
+        locale: "fr",
+        enable_publishing: false,
+        hide_top_toolbar: false,
+        save_image: false,
+        support_host: "https://www.tradingview.com"
       });
     }
 
     function renderVol(){
-      addTV($("tvVix"), "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js", {
-        autosize:true, symbol:"CBOE:VIX", interval:"60", timezone:"Europe/Paris", theme:"dark",
-        style:"1", locale:"fr", enable_publishing:false, hide_top_toolbar:false, save_image:false,
-        support_host:"https://www.tradingview.com"
+      addTradingViewAdvancedChart($("tvVix"), {
+        autosize: true, symbol: "CBOE:VIX", interval: "60",
+        timezone: "Europe/Paris", theme: "dark", style: "1", locale: "fr",
+        enable_publishing: false, hide_top_toolbar: false, save_image: false,
+        support_host: "https://www.tradingview.com"
       });
-      addTV($("tvV2X"), "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js", {
-        autosize:true, symbol:"XETR:V2X", interval:"60", timezone:"Europe/Paris", theme:"dark",
-        style:"1", locale:"fr", enable_publishing:false, hide_top_toolbar:false, save_image:false,
-        support_host:"https://www.tradingview.com"
+
+      addTradingViewAdvancedChart($("tvV2X"), {
+        autosize: true, symbol: "XETR:V2X", interval: "60",
+        timezone: "Europe/Paris", theme: "dark", style: "1", locale: "fr",
+        enable_publishing: false, hide_top_toolbar: false, save_image: false,
+        support_host: "https://www.tradingview.com"
       });
+
+      addTVScript(
+        $("tvRiskQuotes"),
+        "https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js",
+        {
+          width: "100%",
+          height: "100%",
+          isTransparent: true,
+          colorTheme: "dark",
+          locale: "fr",
+          symbolsGroups: [{ name: "Risk", symbols: [
+            { name: "CBOE:VIX", displayName: "VIX" },
+            { name: "TVC:DXY", displayName: "DXY" },
+            { name: "TVC:US10Y", displayName: "US 10Y" },
+            { name: "OANDA:XAUUSD", displayName: "Gold" },
+            { name: "TVC:USOIL", displayName: "WTI" }
+          ]}],
+          showSymbolLogo: true
+        }
+      );
+    }
+
+    function renderFxRates(){
+      addTVScript(
+        $("tvFxRatesQuotes"),
+        "https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js",
+        {
+          width: "100%",
+          height: "100%",
+          isTransparent: true,
+          colorTheme: "dark",
+          locale: "fr",
+          symbolsGroups: [
+            { name: "FX Majors", symbols: [
+              { name: "OANDA:EURUSD", displayName: "EURUSD" },
+              { name: "OANDA:GBPUSD", displayName: "GBPUSD" },
+              { name: "OANDA:USDJPY", displayName: "USDJPY" }
+            ]},
+            { name: "Rates", symbols: [
+              { name: "TVC:US10Y", displayName: "US 10Y" },
+              { name: "TVC:DE10Y", displayName: "DE 10Y" }
+            ]}
+          ],
+          showSymbolLogo: true
+        }
+      );
+
+      addTradingViewAdvancedChart($("tvEurusd"), {
+        autosize: true, symbol: "OANDA:EURUSD", interval: "60",
+        timezone: "Europe/Paris", theme: "dark", style: "1", locale: "fr",
+        enable_publishing: false, hide_top_toolbar: false, save_image: false,
+        support_host: "https://www.tradingview.com"
+      });
+    }
+
+    function renderCommodCrypto(){
+      addTVScript(
+        $("tvCommodQuotes"),
+        "https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js",
+        {
+          width: "100%",
+          height: "100%",
+          isTransparent: true,
+          colorTheme: "dark",
+          locale: "fr",
+          symbolsGroups: [{ name: "Commodities", symbols: [
+            { name: "OANDA:XAUUSD", displayName: "Gold" },
+            { name: "TVC:USOIL", displayName: "WTI" }
+          ]}],
+          showSymbolLogo: true
+        }
+      );
+
+      addTVScript(
+        $("tvCryptoQuotes"),
+        "https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js",
+        {
+          width: "100%",
+          height: "100%",
+          isTransparent: true,
+          colorTheme: "dark",
+          locale: "fr",
+          symbolsGroups: [{ name: "Crypto", symbols: [
+            { name: "BITSTAMP:BTCUSD", displayName: "BTCUSD" },
+            { name: "BITSTAMP:ETHUSD", displayName: "ETHUSD" }
+          ]}],
+          showSymbolLogo: true
+        }
+      );
+    }
+
+    function renderMacro(){
+      addTVScript(
+        $("tvEconCalendar"),
+        "https://s3.tradingview.com/external-embedding/embed-widget-economic-calendar.js",
+        {
+          width: "100%",
+          height: "100%",
+          colorTheme: "dark",
+          isTransparent: true,
+          locale: "fr",
+          importanceFilter: "-1,0,1",
+          currencyFilter: "USD,EUR,GBP,JPY"
+        }
+      );
+
+      addTVScript(
+        $("tvMacroQuotes"),
+        "https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js",
+        {
+          width: "100%",
+          height: "100%",
+          isTransparent: true,
+          colorTheme: "dark",
+          locale: "fr",
+          symbolsGroups: [{ name: "Macro", symbols: [
+            { name: "TVC:DXY", displayName: "DXY" },
+            { name: "TVC:US10Y", displayName: "US 10Y" },
+            { name: "OANDA:XAUUSD", displayName: "Gold" }
+          ]}],
+          showSymbolLogo: true
+        }
+      );
+    }
+
+    // RSS via proxy
+    const feeds = {
+      markets: { note:"RSS marchés.", urls:[
+        "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+        "https://www.marketwatch.com/rss/topstories",
+        "https://www.investing.com/rss/news_25.rss"
+      ]},
+      aviation: { note:"RSS aviation.", urls:[
+        "https://www.aero-news.net/news/rssCOMANW.xml",
+        "https://www.aero-news.net/news/rssfeed.xml"
+      ]},
+      maritime: { note:"RSS maritime.", urls:[
+        "https://gcaptain.com/feed/",
+        "https://www.maritime-executive.com/rss"
+      ]}
+    };
+
+    async function fetchText(url){
+      const proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
+      const r = await fetch(proxy, { cache: "no-store" });
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      return await r.text();
+    }
+
+    function parseRss(xmlText){
+      const p = new DOMParser();
+      const xml = p.parseFromString(xmlText, "text/xml");
+      const items = Array.from(xml.querySelectorAll("item")).slice(0, 40);
+      return items.map(it => ({
+        title: (it.querySelector("title")?.textContent || "").trim(),
+        link: (it.querySelector("link")?.textContent || "").trim(),
+        pubDate: (it.querySelector("pubDate")?.textContent || "").trim(),
+        _srcUrl: ""
+      })).filter(x => x.title && x.link);
+    }
+
+    function fmtDate(s){
+      const d = new Date(s);
+      if(isNaN(d.getTime())) return s || "";
+      return d.toLocaleString("fr-FR", { dateStyle:"medium", timeStyle:"short" });
+    }
+
+    async function loadNews(kind){
+      const cfg = feeds[kind];
+      $("newsFeedNote").textContent = cfg.note;
+      $("newsStatus").textContent = "Chargement…";
+      const max = parseInt($("newsCount").value, 10);
+
+      const all = [];
+      let errors = 0;
+
+      for (const u of cfg.urls){
+        try{
+          const xml = await fetchText(u);
+          const parsed = parseRss(xml);
+          parsed.forEach(x => x._srcUrl = u);
+          all.push(...parsed);
+        }catch(e){
+          errors++;
+        }
+      }
+
+      all.sort((a,b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+      const take = all.slice(0, max);
+
+      const list = $("newsList");
+      list.innerHTML = "";
+      for (const it of take){
+        const div = document.createElement("div");
+        div.className = "item";
+        const a = document.createElement("a");
+        a.href = it.link;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = it.title;
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        let host = "rss";
+        try{ host = new URL(it._srcUrl).hostname.replace(/^www\./,""); }catch(e){}
+        meta.innerHTML = `<span>${host}</span><span>•</span><span>${fmtDate(it.pubDate)}</span>`;
+
+        div.appendChild(a);
+        div.appendChild(meta);
+        list.appendChild(div);
+      }
+
+      $("newsStatus").textContent = `OK — ${take.length} articles (erreurs: ${errors})`;
+      setConn(true, "ok");
+    }
+
+    // AIR TRAFFIC (OpenSky)
+    const airRegions = {
+      fr: { name:"France", box: { lamin:41.0, lomin:-5.6, lamax:51.6, lomax:10.2 }, center:[46.6, 2.2], zoom:6 },
+      we: { name:"Europe Ouest", box: { lamin:35.0, lomin:-11.0, lamax:60.5, lomax:17.0 }, center:[47.3, 2.0], zoom:4 },
+      eu: { name:"Europe", box: { lamin:34.0, lomin:-15.0, lamax:72.0, lomax:45.0 }, center:[52.0, 15.0], zoom:3 }
+    };
+
+    function initAirMap(){
+      if(state.airMap) return;
+      const r = airRegions[$("airRegion").value] || airRegions.fr;
+      state.airMap = L.map("airMap", { zoomControl:true }).setView(r.center, r.zoom);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 }).addTo(state.airMap);
+      state.airLayer = L.layerGroup().addTo(state.airMap);
+    }
+
+    function isLikelyCommercial(callsign){
+      const cs = (callsign || "").trim().toUpperCase();
+      if(!cs) return false;
+      const badPrefixes = ["RCH","QID","CNV","IAM","LAGR","SNAKE","HAF","BAF","DAF","NATO","SAM","FORCE","REACH"];
+      for (const p of badPrefixes){ if(cs.startsWith(p)) return false; }
+      return /^[A-Z]{2,3}\d{1,4}[A-Z]?$/.test(cs);
+    }
+
+    function msToKmh(ms){ return (ms || 0) * 3.6; }
+    function mToFt(m){ return (m || 0) * 3.28084; }
+
+    async function loadAirTraffic(){
+      initAirMap();
+      const region = airRegions[$("airRegion").value] || airRegions.fr;
+      const filterMode = $("airFilter").value;
+
+      const url = new URL("https://opensky-network.org/api/states/all");
+      url.searchParams.set("lamin", region.box.lamin);
+      url.searchParams.set("lomin", region.box.lomin);
+      url.searchParams.set("lamax", region.box.lamax);
+      url.searchParams.set("lomax", region.box.lomax);
+
+      $("airStatus").textContent = "Chargement trafic aérien…";
+
+      try{
+        const proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url.toString());
+        const r = await fetch(proxy, { cache:"no-store" });
+        if(!r.ok) throw new Error("HTTP " + r.status);
+        const data = await r.json();
+
+        let flights = (data.states || []).map(s => ({
+          callsign: (s[1] || "").trim(),
+          country: s[2] || "",
+          lon: s[5],
+          lat: s[6],
+          alt_m: (s[13] != null ? s[13] : s[7]),
+          onGround: !!s[8],
+          v_ms: s[9]
+        })).filter(f =>
+          f.lat != null && f.lon != null &&
+          !f.onGround &&
+          f.v_ms != null &&
+          f.alt_m != null &&
+          f.callsign
+        );
+
+        if(filterMode === "commercial"){
+          flights = flights.filter(f => isLikelyCommercial(f.callsign));
+        }
+
+        flights.sort((a,b) => (b.v_ms||0) - (a.v_ms||0));
+
+        $("airCountBadge").textContent = `${flights.length} vols`;
+        $("airStatus").textContent = `OK — ${flights.length} vols (${region.name})`;
+        setConn(true, "ok");
+
+        state.airLayer.clearLayers();
+        const show = flights.slice(0, 250);
+        show.forEach(f => {
+          const sp = Math.round(msToKmh(f.v_ms));
+          const alt = Math.round(mToFt(f.alt_m)/100)*100;
+          L.circleMarker([f.lat, f.lon], { radius:6, weight:2, opacity:1, fillOpacity:.18 })
+            .addTo(state.airLayer)
+            .bindPopup(`<b>${f.callsign}</b><br>Speed: ${sp} km/h<br>Alt: ${alt} ft<br>${f.country}`);
+        });
+
+        const tbody = $("airTableBody");
+        tbody.innerHTML = "";
+        flights.slice(0, 25).forEach(f => {
+          const altFt = Math.round(mToFt(f.alt_m)/100)*100;
+          const sp = Math.round(msToKmh(f.v_ms));
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${f.callsign}</td>
+            <td>${altFt.toLocaleString("fr-FR")} ft</td>
+            <td>${sp.toLocaleString("fr-FR")} km/h</td>
+            <td class="muted">${(f.country||"").slice(0,28)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      }catch(e){
+        $("airStatus").textContent = "Erreur trafic aérien (proxy/API bloqué ou rate-limit).";
+        $("airCountBadge").textContent = "—";
+        setConn(false, "air blocked");
+      }
+    }
+
+    function startAirAuto(){
+      stopAirAuto();
+      const v = $("airAuto").value;
+      if(v === "off") return;
+      const ms = parseInt(v,10) * 1000;
+      state.airAutoTimer = setInterval(() => {
+        if(state.tab === "air") loadAirTraffic();
+      }, ms);
+    }
+    function stopAirAuto(){
+      if(state.airAutoTimer){
+        clearInterval(state.airAutoTimer);
+        state.airAutoTimer = null;
+      }
+    }
+
+    // MARITIME MAP + RSS
+    function initMaritimeMap(){
+      if(state.maritimeMap) return;
+      state.maritimeMap = L.map("maritimeMap", { zoomControl:true }).setView([20, 15], 2);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 }).addTo(state.maritimeMap);
+
+      const pts = [
+        { n:"Canal de Suez", c:[30.0, 32.5] },
+        { n:"Bab-el-Mandeb", c:[12.6, 43.3] },
+        { n:"Détroit d'Ormuz", c:[26.6, 56.2] },
+        { n:"Détroit de Malacca", c:[2.5, 101.0] },
+        { n:"Canal de Panama", c:[9.1, -79.7] },
+        { n:"Gibraltar", c:[36.0, -5.6] }
+      ];
+      pts.forEach(p => L.circleMarker(p.c, { radius:8, weight:2, opacity:1, fillOpacity:.22 })
+        .addTo(state.maritimeMap).bindPopup(p.n));
+    }
+
+    async function loadMaritimeNews(){
+      const list = $("maritimeNewsList");
+      list.innerHTML = "";
+      try{
+        const cfg = feeds.maritime;
+        const all = [];
+        for (const u of cfg.urls){
+          try{
+            const xml = await fetchText(u);
+            const parsed = parseRss(xml);
+            parsed.forEach(x => x._srcUrl = u);
+            all.push(...parsed);
+          }catch(e){}
+        }
+        all.sort((a,b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+        const take = all.slice(0, 10);
+
+        for (const it of take){
+          const div = document.createElement("div");
+          div.className = "item";
+          const a = document.createElement("a");
+          a.href = it.link; a.target = "_blank"; a.rel = "noopener noreferrer";
+          a.textContent = it.title;
+
+          const meta = document.createElement("div");
+          meta.className = "meta";
+          let host = "rss";
+          try{ host = new URL(it._srcUrl).hostname.replace(/^www\./,""); }catch(e){}
+          meta.innerHTML = `<span>${host}</span><span>•</span><span>${fmtDate(it.pubDate)}</span>`;
+
+          div.appendChild(a);
+          div.appendChild(meta);
+          list.appendChild(div);
+        }
+      }catch(e){
+        list.innerHTML = `<div class="note">Erreur de chargement maritime news.</div>`;
+      }
+    }
+
+    function loadSymbolFromInput(){
+      const sym = $("symbolInput").value.trim();
+      if(!sym) return;
+      state.symbol = sym;
+      renderMainChart(sym);
+      setConn(true, "symbol loaded");
+    }
+
+    function onTabEnter(tab){
+      if(tab === "markets") renderMarkets();
+      if(tab === "vol") renderVol();
+      if(tab === "fxrates") renderFxRates();
+      if(tab === "commodcrypto") renderCommodCrypto();
+      if(tab === "macro") renderMacro();
+      if(tab === "news") loadNews($("newsFeedSelect").value);
+      if(tab === "air"){ loadAirTraffic(); startAirAuto(); }
+      if(tab === "maritime"){ initMaritimeMap(); loadMaritimeNews(); }
+    }
+
+    function refreshAll(){
+      onTabEnter(state.tab);
     }
 
     function startClock(){
-      const tick = () => $("clock").textContent = new Date().toLocaleTimeString("fr-FR",{hour12:false});
-      tick(); setInterval(tick, 1000);
+      const tick = () => $("clock").textContent = new Date().toLocaleTimeString("fr-FR", { hour12:false });
+      tick();
+      setInterval(tick, 1000);
     }
 
-    function init(){
-      startClock();
-      renderMarkets();
-      renderVol();
-
-      $("loadSymbolBtn").addEventListener("click", ()=>{
-        state.symbol = $("symbolInput").value.trim() || "SP:SPX";
-        renderMarkets();
-      });
-      $("resetSymbolBtn").addEventListener("click", ()=>{
+    function initEvents(){
+      $("refreshBtn").addEventListener("click", refreshAll);
+      $("loadSymbolBtn").addEventListener("click", loadSymbolFromInput);
+      $("resetSymbolBtn").addEventListener("click", () => {
         $("symbolInput").value = "SP:SPX";
         state.symbol = "SP:SPX";
         renderMarkets();
       });
+      $("symbolInput").addEventListener("keydown", (e) => { if(e.key === "Enter") loadSymbolFromInput(); });
 
-      $("nav").addEventListener("click", (e)=>{
-        const b = e.target.closest("button[data-tab]");
-        if(!b) return;
-        setTab(b.dataset.tab);
+      $("nav").addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-tab]");
+        if(!btn) return;
+        setTab(btn.dataset.tab);
+        onTabEnter(btn.dataset.tab);
       });
 
-      document.addEventListener("keydown", (e)=>{
-        const map = { F1:"markets", F2:"vol", F3:"news", F4:"space", F5:"maritime" };
-        if(map[e.key]){ e.preventDefault(); setTab(map[e.key]); }
+      document.addEventListener("keydown", (e) => {
+        const map = { F1:"markets", F2:"vol", F3:"fxrates", F4:"commodcrypto", F5:"macro", F6:"news", F7:"air", F8:"maritime" };
+        if(map[e.key]){
+          e.preventDefault();
+          setTab(map[e.key]);
+          onTabEnter(map[e.key]);
+        }
       });
 
-      $("refreshBtn").addEventListener("click", ()=>{
-        if(state.tab==="markets") renderMarkets();
-        if(state.tab==="vol") renderVol();
+      // NEWS
+      $("newsFeedSelect").addEventListener("change", () => loadNews($("newsFeedSelect").value));
+      $("refreshNewsBtn").addEventListener("click", () => loadNews($("newsFeedSelect").value));
+
+      // AIR
+      $("refreshAirBtn").addEventListener("click", loadAirTraffic);
+      $("centerAirBtn").addEventListener("click", () => {
+        initAirMap();
+        const r = airRegions[$("airRegion").value] || airRegions.fr;
+        state.airMap.setView(r.center, r.zoom);
       });
+      $("airRegion").addEventListener("change", () => {
+        initAirMap();
+        const r = airRegions[$("airRegion").value] || airRegions.fr;
+        state.airMap.setView(r.center, r.zoom);
+        loadAirTraffic();
+      });
+      $("airFilter").addEventListener("change", loadAirTraffic);
+      $("airAuto").addEventListener("change", startAirAuto);
+
+      // MARITIME
+      $("centerMaritimeBtn").addEventListener("click", () => {
+        initMaritimeMap();
+        state.maritimeMap.setView([20, 15], 2);
+      });
+      $("refreshMaritimeNewsBtn").addEventListener("click", loadMaritimeNews);
     }
-    init();
+
+    function boot(){
+      initEvents();
+      startClock();
+      setConn(true, "ok");
+      renderMarkets();
+      renderVol();
+      renderFxRates();
+      renderCommodCrypto();
+      renderMacro();
+      $("newsFeedNote").textContent = feeds.markets.note;
+      $("newsFeedSelect").value = "markets";
+    }
+
+    boot();
   </script>
 </body>
 </html>
