@@ -13,13 +13,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body data-theme="markets">
+<body data-theme="markets" data-layout="quad" data-density="compact">
   <div class="app">
     <!-- Top Bar -->
     <header class="top">
@@ -33,7 +33,8 @@
 
       <div class="cmd">
         <span class="k">CMD</span>
-        <input id="cmdInput" placeholder="Ex: FX EURUSD · CRYPTO BTC · NEWS shipping · HELP" autocomplete="off" />
+        <input id="cmdInput" placeholder="Ctrl+K · Ex: NEWS shipping · FX · CRYPTO · LAYOUT hex · AUTO 30" autocomplete="off" />
+        <div class="cmdSug" id="cmdSug" aria-hidden="true"></div>
       </div>
 
       <div class="status">
@@ -52,6 +53,9 @@
           </div>
         </div>
 
+        <button class="btn" id="layoutBtn" title="Layout (Quad/Hex/Focus)">Layout</button>
+        <button class="btn" id="densityBtn" title="Density (Compact/Comfort)">Density</button>
+        <button class="btn" id="settingsBtn" title="Settings">Settings</button>
         <button class="btn primary" id="refreshBtn">Refresh</button>
       </div>
     </header>
@@ -67,25 +71,43 @@
         <button data-tab="crypto"><span>Crypto</span><kbd>F4</kbd></button>
         <button data-tab="macro"><span>Macro</span><kbd>F5</kbd></button>
         <button data-tab="news"><span>News</span><kbd>F6</kbd></button>
-        <button data-tab="aviation"><span>Aviation</span><kbd>F7</kbd></button>
         <button data-tab="maritime"><span>Maritime</span><kbd>F8</kbd></button>
       </div>
 
-      <div class="sideTitle">QUICK</div>
+      <div class="sideTitle">WATCHLIST</div>
       <div class="panel mini">
         <div class="miniRow">
-          <span class="tag">Sources</span>
-          <span class="muted">Commercial-OK</span>
+          <span class="tag">Pins</span>
+          <span class="muted tiny" id="wlHint">FX + Crypto</span>
         </div>
-        <ul class="bul">
-          <li>News: GDELT</li>
-          <li>FX: Frankfurter (ECB)</li>
-          <li>Crypto: CoinGecko</li>
-        </ul>
+
+        <div class="wl">
+          <div class="wlHead">
+            <button class="chip" id="wlAddFx">+ FX</button>
+            <button class="chip" id="wlAddCrypto">+ Crypto</button>
+            <button class="chip ghost" id="wlClear">Reset</button>
+          </div>
+          <div class="wlBody" id="wlBody"></div>
+        </div>
+
         <div class="hr"></div>
         <div class="muted tiny">
-          OpenStreetMap tiles: attribution requise.
+          Sources: Frankfurter (ECB), CoinGecko, GDELT, OSM (attribution).
         </div>
+      </div>
+
+      <div class="sideTitle">ACTIONS</div>
+      <div class="panel mini">
+        <div class="miniRow">
+          <span class="tag">Tools</span>
+          <span class="muted tiny">CSV / Alerts</span>
+        </div>
+        <div class="toolRow">
+          <button class="btn sm" id="exportBtn">Export CSV</button>
+          <button class="btn sm" id="alertsBtn">Alerts</button>
+        </div>
+        <div class="hr"></div>
+        <div class="muted tiny">Ctrl+K: palette · Ctrl+R: refresh · F1–F8: modules</div>
       </div>
     </aside>
 
@@ -94,19 +116,19 @@
       <div class="mainHead">
         <div>
           <div class="title" id="tabTitle">Markets</div>
-          <div class="subtitle" id="tabSubtitle">Snapshot open-data (FX/Crypto/News)</div>
+          <div class="subtitle" id="tabSubtitle">Snapshot open-data</div>
         </div>
         <div class="keys">
-          <kbd>F1</kbd><kbd>F2</kbd><kbd>F3</kbd><kbd>F4</kbd><kbd>F5</kbd><kbd>F6</kbd><kbd>F7</kbd><kbd>F8</kbd>
+          <kbd>F1</kbd><kbd>F2</kbd><kbd>F3</kbd><kbd>F4</kbd><kbd>F5</kbd><kbd>F6</kbd><kbd>F8</kbd>
         </div>
       </div>
 
       <div class="grid" id="grid">
-        <!-- 4 panels -->
         <section class="panel" id="p1">
           <div class="panelHead">
             <div class="panelTitle" id="p1t">Watchlist</div>
             <div class="panelMeta" id="p1m">live</div>
+            <button class="iconBtn" data-focus="p1" title="Focus">⤢</button>
           </div>
           <div class="panelBody" id="p1b"></div>
         </section>
@@ -115,6 +137,7 @@
           <div class="panelHead">
             <div class="panelTitle" id="p2t">Chart</div>
             <div class="panelMeta" id="p2m">spark</div>
+            <button class="iconBtn" data-focus="p2" title="Focus">⤢</button>
           </div>
           <div class="panelBody" id="p2b"></div>
         </section>
@@ -123,6 +146,7 @@
           <div class="panelHead">
             <div class="panelTitle" id="p3t">Signals</div>
             <div class="panelMeta" id="p3m">computed</div>
+            <button class="iconBtn" data-focus="p3" title="Focus">⤢</button>
           </div>
           <div class="panelBody" id="p3b"></div>
         </section>
@@ -131,11 +155,44 @@
           <div class="panelHead">
             <div class="panelTitle" id="p4t">News</div>
             <div class="panelMeta" id="p4m">GDELT</div>
+            <button class="iconBtn" data-focus="p4" title="Focus">⤢</button>
           </div>
           <div class="panelBody" id="p4b"></div>
         </section>
+
+        <!-- Panels additionnels (layout hex) -->
+        <section class="panel extra" id="p5">
+          <div class="panelHead">
+            <div class="panelTitle" id="p5t">Snapshot</div>
+            <div class="panelMeta" id="p5m">KPIs</div>
+            <button class="iconBtn" data-focus="p5" title="Focus">⤢</button>
+          </div>
+          <div class="panelBody" id="p5b"></div>
+        </section>
+
+        <section class="panel extra" id="p6">
+          <div class="panelHead">
+            <div class="panelTitle" id="p6t">Console</div>
+            <div class="panelMeta" id="p6m">events</div>
+            <button class="iconBtn" data-focus="p6" title="Focus">⤢</button>
+          </div>
+          <div class="panelBody" id="p6b"></div>
+        </section>
       </div>
     </main>
+  </div>
+
+  <!-- Toasts + Modals -->
+  <div class="toastWrap" id="toastWrap"></div>
+
+  <div class="modal" id="modal">
+    <div class="modalCard">
+      <div class="modalHead">
+        <div class="modalTitle" id="modalTitle">Settings</div>
+        <button class="iconBtn" id="modalClose">✕</button>
+      </div>
+      <div class="modalBody" id="modalBody"></div>
+    </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
