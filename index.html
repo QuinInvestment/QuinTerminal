@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quinterminal — Oil Intelligence</title>
+  <meta name="description" content="Open-data oil intelligence terminal: live prices, physical flows, chokepoints, inventories, positioning, geopolitical risk and probabilistic forecasts." />
+  <meta name="color-scheme" content="dark light" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- One request per family: a bad family name can't take the others down. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800&display=swap" />
+
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/terminal.css" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="shell" id="shell">
+    <header class="topbar" role="banner">
+      <div class="brand" title="Quinterminal">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 2c5 7 9 11.6 9 17a9 9 0 0 1-18 0c0-5.4 4-10 9-17z" fill="none" stroke="currentColor" stroke-width="2.2"/>
+          <path d="M9.6 21.5h12.8" stroke="currentColor" stroke-width="2.2"/>
+        </svg>
+        <div class="brand-text">
+          <span class="brand-name">Quinterminal</span>
+          <span class="brand-sub">Oil intelligence</span>
+        </div>
+      </div>
+
+      <button class="crisis" id="crisisBanner" type="button" hidden title="Open the Hormuz war room">
+        <span class="crisis-days" id="crisisDays">—</span>
+        <span class="crisis-text">
+          <span class="crisis-line" id="crisisLine">days since Hormuz closed to normal traffic</span>
+          <span class="crisis-meter" aria-hidden="true"><span id="crisisMeterFill"></span></span>
+          <span class="crisis-sub" id="crisisSub">throughput —</span>
+        </span>
+      </button>
+
+      <div class="cmd" role="search">
+        <label class="cmd-prompt" for="cmdInput">GO</label>
+        <input id="cmdInput" class="cmd-input" type="text" autocomplete="off" spellcheck="false"
+               placeholder="Function: HRMZ, FCST, MAP HORMUZ, OPT 110 30, HELP" aria-describedby="cmdHint" />
+        <kbd id="cmdHint" class="cmd-kbd">Ctrl K</kbd>
+        <div class="cmd-sug" id="cmdSug" role="listbox" hidden></div>
+      </div>
+
+      <div class="clocks" id="clocks" aria-label="Market clocks"></div>
+
+      <div class="top-actions">
+        <button class="health-pill" id="healthPill" type="button" title="Data sources">
+          <span class="dot" id="healthDot"></span><span id="healthText">Connecting</span>
+        </button>
+        <button class="icon-btn" id="themeBtn" type="button" title="Switch day / night palette" aria-label="Switch day or night palette">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </button>
+        <button class="icon-btn" id="alertsBtn" type="button" title="Alerts" aria-label="Alerts">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z M10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          <span class="badge" id="alertsBadge" hidden>0</span>
+        </button>
+        <button class="icon-btn" id="settingsBtn" type="button" title="Settings and data sources" aria-label="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M5.2 18.8l2.1-2.1M16.7 7.3l2.1-2.1" stroke="currentColor" stroke-width="1.8"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="tape" id="tape" role="region" aria-label="Live prices"></div>
+
+    <nav class="rail" id="rail" aria-label="Functions"></nav>
+
+    <main class="main" id="main" tabindex="-1">
+      <div class="view-head" id="viewHead">
+        <div class="view-title">
+          <h1 id="viewTitle">Loading</h1>
+          <p id="viewSub"></p>
+        </div>
+        <div class="view-tools" id="viewTools"></div>
+      </div>
+      <div class="view" id="view"></div>
+    </main>
+
+    <footer class="statusbar" id="statusbar">
+      <div class="sb-cell" id="sbSources">Sources —</div>
+      <div class="sb-cell" id="sbWs">Stream —</div>
+      <div class="sb-cell" id="sbProxy">Edge proxy off</div>
+      <div class="sb-spacer"></div>
+      <div class="sb-cell sb-dim" id="sbClock">—</div>
+      <div class="sb-cell sb-dim">Open data only. Not investment advice.</div>
+    </footer>
+  </div>
+
+  <div class="focus-layer" id="focusLayer" hidden></div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <div class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="drawer-card">
+      <div class="drawer-head">
+        <h2 id="drawerTitle">Panel</h2>
+        <button class="icon-btn" id="drawerClose" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div class="drawer-body" id="drawerBody"></div>
+    </div>
+  </div>
+
+  <noscript><div class="noscript">Quinterminal needs JavaScript to stream market data.</div></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

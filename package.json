@@ -1,0 +1,13 @@
+{
+  "name": "quinterminal",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Open-data oil intelligence terminal (static site, no build step).",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "serve": "python3 -m http.server 8080",
+    "snapshot": "node pipeline/snapshot.mjs",
+    "test": "node tests/stats.test.js && node tests/worker.test.mjs && node tests/pipeline.test.mjs"
+  }
+}
