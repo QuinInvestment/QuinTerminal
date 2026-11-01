@@ -1,0 +1,151 @@
+/* Quinterminal design tokens.
+   Two palettes borrowed from ship-bridge ECDIS displays: NIGHT (default) and DAY.
+   Every colour used by the UI, the charts and the map comes from here. */
+
+:root,
+:root[data-theme="night"] {
+  color-scheme: dark;
+
+  /* planes */
+  --bg-0: #080c11;          /* page / deep water */
+  --bg-1: #0d141c;          /* panel surface (charts validate against this) */
+  --bg-2: #121b26;          /* panel head, raised */
+  --bg-3: #182330;          /* hover, inputs */
+  --line: #1d2935;          /* hairline */
+  --line-2: #2a3846;        /* stronger hairline, axis */
+  --grid: #18222d;          /* chart gridline, one step off the surface */
+
+  /* ink */
+  --ink-1: #e4e9ee;
+  --ink-2: #9fb0c0;
+  --ink-3: #71839a;
+  --ink-inv: #0b1016;
+
+  /* roles */
+  --accent: #f0a23b;        /* sodium / flare amber: focus, active function, live */
+  --accent-soft: rgba(240, 162, 59, 0.14);
+  --accent-line: rgba(240, 162, 59, 0.45);
+  --hazard: #e0569f;        /* nautical-chart magenta: closures, hazards */
+  --hazard-soft: rgba(224, 86, 159, 0.15);
+  --up: #2fc983;
+  --down: #f2645f;
+  --up-soft: rgba(47, 201, 131, 0.16);
+  --down-soft: rgba(242, 100, 95, 0.16);
+
+  /* status (reserved meanings, always paired with a label) */
+  --good: #0ca30c;
+  --warn: #fab219;
+  --serious: #ec835a;
+  --crit: #e5484d;
+
+  /* categorical series (validated, dark steps, surface #0d141c) */
+  --s1: #3987e5;  /* blue    */
+  --s2: #d95926;  /* orange  */
+  --s3: #199e70;  /* aqua    */
+  --s4: #c98500;  /* yellow  */
+  --s5: #d55181;  /* magenta */
+  --s6: #008300;  /* green   */
+  --s7: #9085e9;  /* violet  */
+  --s8: #e66767;  /* red     */
+
+  /* sequential (blue) and diverging (blue <-> red, grey midpoint) */
+  --seq-1: #104281; --seq-2: #1c5cab; --seq-3: #2a78d6; --seq-4: #5598e7; --seq-5: #86b6ef; --seq-6: #b7d3f6;
+  --div-neg: #3987e5; --div-mid: #383835; --div-pos: #e66767;
+
+  /* map */
+  --map-sea: #08131d;
+  --map-land: #191a16;
+  --map-coast: #3a3a31;
+  --map-border: #34352d;
+  --map-label: #8a8d80;
+  --map-lane: #b23f80;
+
+  --shadow-pop: 0 18px 48px rgba(0, 0, 0, 0.55);
+}
+
+:root[data-theme="day"] {
+  color-scheme: light;
+
+  --bg-0: #e9edf0;
+  --bg-1: #fbfcfc;
+  --bg-2: #f2f5f7;
+  --bg-3: #e7ecf0;
+  --line: #d6dde3;
+  --line-2: #b9c4ce;
+  --grid: #e6ebef;
+
+  --ink-1: #0e1a26;
+  --ink-2: #3f5164;
+  --ink-3: #5f7184;
+  --ink-inv: #ffffff;
+
+  --accent: #9a5b00;
+  --accent-soft: rgba(154, 91, 0, 0.12);
+  --accent-line: rgba(154, 91, 0, 0.45);
+  --hazard: #a8246e;
+  --hazard-soft: rgba(168, 36, 110, 0.12);
+  --up: #0b7a45;
+  --down: #c0262d;
+  --up-soft: rgba(11, 122, 69, 0.12);
+  --down-soft: rgba(192, 38, 45, 0.12);
+
+  --good: #0ca30c;
+  --warn: #b37a00;
+  --serious: #c4561f;
+  --crit: #b3261e;
+
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --s3: #1baf7a;
+  --s4: #eda100;
+  --s5: #e87ba4;
+  --s6: #008300;
+  --s7: #6250d6;
+  --s8: #e34948;
+
+  --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #1c5cab; --seq-6: #0d366b;
+  --div-neg: #2a78d6; --div-mid: #f0efec; --div-pos: #e34948;
+
+  --map-sea: #c9dbe6;
+  --map-land: #efe9d8;
+  --map-coast: #a9a28c;
+  --map-border: #b9b19a;
+  --map-label: #5b5848;
+  --map-lane: #b0307a;
+
+  --shadow-pop: 0 18px 48px rgba(15, 30, 45, 0.22);
+}
+
+:root {
+  /* type */
+  --font-sans: "IBM Plex Sans Condensed", "Roboto Condensed", "Arial Narrow", "Helvetica Neue", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-stencil: "Big Shoulders Stencil Display", "Big Shoulders Stencil", "Big Shoulders Display", "IBM Plex Sans Condensed", sans-serif;
+
+  /* scale (Bringhurst-style steps, tuned for a dense terminal) */
+  --t-11: 11px;
+  --t-12: 12px;
+  --t-13: 13px;
+  --t-14: 14px;
+  --t-16: 16px;
+  --t-18: 18px;
+  --t-21: 21px;
+  --t-24: 24px;
+  --t-32: 32px;
+  --t-44: 44px;
+
+  /* rhythm */
+  --u: 4px;
+  --gap: 8px;
+  --pad: 10px;
+  --radius: 2px;
+  --row: 44px;          /* grid row unit for panels */
+  --rail-w: 190px;
+  --top-h: 56px;
+  --tape-h: 40px;
+  --sb-h: 26px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion: 0; }
+}
