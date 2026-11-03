@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QuinTerminal</title>
+  <meta name="description" content="QuinTerminal, an open-data terminal for the global oil market: live prices, the world balance, chokepoints, refining, inventories, positioning, event risk and probabilistic forecasts." />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#0d141c" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="assets/fonts/hanken-grotesk-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/terminal.css" />
+  <script>
+    // apply the saved palette before the first paint
+    try { const s = JSON.parse(localStorage.getItem("qt:v3:settings") || "{}"); if (s.theme === "day") document.documentElement.dataset.theme = "day"; } catch {}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="shell" id="shell">
+    <header class="topbar" role="banner">
+      <a class="brand" href="#OIL" title="QuinTerminal, back to the cockpit">
+        <svg class="brand-mark" viewBox="-6 -6 44 44" aria-hidden="true">
+          <circle class="disc" cx="16" cy="16" r="22"/>
+          <path class="q" d="M18.4 8.03A9.2 9.2 0 1 0 20.85 21.91M15.8 19.2L23.6 27.0M18.6 22.4L25.37 11.24" stroke-width="3.0"/>
+          <path class="head" d="M28.8 5.6L28.18 13.18L22.36 9.65Z"/>
+        </svg>
+        <span class="brand-name">QuinTerminal</span>
+      </a>
+
+      <div class="cmd" role="search">
+        <input id="cmdInput" class="cmd-input" type="text" autocomplete="off" spellcheck="false" aria-label="Function or command"
+               placeholder="Function or command: BAL, FLOW, FCST, OPT 110 30, HELP" aria-describedby="cmdHint" />
+        <kbd id="cmdHint" class="cmd-kbd">Ctrl K</kbd>
+        <button class="cmd-go" id="cmdGo" type="button" aria-label="Run the command">GO</button>
+        <div class="cmd-sug" id="cmdSug" role="listbox" hidden></div>
+      </div>
+
+      <div class="clocks" id="clocks" aria-label="Market clocks"></div>
+
+      <div class="top-actions">
+        <button class="health-pill" id="healthPill" type="button" title="Data sources">
+          <span class="dot" id="healthDot"></span><span id="healthText">Connecting</span><span class="hp-n" id="healthCount"></span>
+        </button>
+        <button class="icon-btn" id="themeBtn" type="button" title="Switch day / night palette" aria-label="Switch day or night palette">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+        <button class="icon-btn" id="alertsBtn" type="button" title="Alerts" aria-label="Alerts">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z M10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span class="badge" id="alertsBadge" hidden>0</span>
+        </button>
+        <button class="icon-btn" id="settingsBtn" type="button" title="Settings and data sources" aria-label="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M5.2 18.8l2.1-2.1M16.7 7.3l2.1-2.1" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="tape" id="tape" role="region" aria-label="Live prices"></div>
+
+    <nav class="rail" id="rail" aria-label="Functions"></nav>
+
+    <main class="main" id="main" tabindex="-1">
+      <div class="view-head" id="viewHead">
+        <div class="view-title">
+          <h1 id="viewTitle">Loading</h1>
+          <p id="viewSub"></p>
+        </div>
+        <div class="view-tools" id="viewTools"></div>
+      </div>
+      <div class="view" id="view"></div>
+    </main>
+
+    <footer class="statusbar" id="statusbar">
+      <div class="sb-cell" id="sbSources">Sources</div>
+      <div class="sb-cell" id="sbWs">Stream</div>
+      <div class="sb-cell" id="sbProxy">Edge proxy off</div>
+      <div class="sb-spacer"></div>
+      <div class="sb-cell sb-dim" id="sbClock"></div>
+      <div class="sb-cell sb-dim">Open data only. Not investment advice.</div>
+    </footer>
+  </div>
+
+  <div class="focus-layer" id="focusLayer" hidden></div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <div class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="drawer-card">
+      <div class="drawer-head">
+        <h2 id="drawerTitle">Panel</h2>
+        <button class="icon-btn" id="drawerClose" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+      </div>
+      <div class="drawer-body" id="drawerBody"></div>
+    </div>
+  </div>
+
+  <noscript><div class="noscript">QuinTerminal needs JavaScript to stream market data.</div></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
