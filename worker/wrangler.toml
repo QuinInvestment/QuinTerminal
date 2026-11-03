@@ -1,0 +1,9 @@
+name = "qt-edge"
+main = "qt-edge.js"
+compatibility_date = "2025-09-01"
+
+# Optional: restrict who may call the proxy (comma-separated origins).
+# [vars]
+# ALLOWED_ORIGINS = "https://yourname.github.io,http://localhost:8000"
+
+# Secrets are set with:  npx wrangler secret put FIRMS_KEY
