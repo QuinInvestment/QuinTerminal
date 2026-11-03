@@ -1,0 +1,163 @@
+/* QuinTerminal design tokens.
+   The terminal's own palette, from ship-bridge chart displays: night first,
+   sodium amber as the accent, chart magenta for hazards. Version 3.1 keeps
+   those hues and lowers their saturation (OKLCH chroma about 15 to 35 %
+   lower) for a quieter screen. Every colour in the UI, the charts and the map
+   comes from here; the modules read the same variables through cssVar(). */
+
+:root,
+:root[data-theme="night"] {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg: #080c11;            /* page, deep water */
+  --panel: #0d141c;         /* panels, top bar, rail (charts validate against this) */
+  --raised: #162130;        /* hover, selected rows, tooltips, menus */
+  --line: #1d2935;          /* hairlines, table rules, chart grid */
+  --line-strong: #2a3846;   /* axes, strong borders */
+  --line-input: #55667a;    /* input and button borders, 3:1 on the panels */
+
+  /* ink */
+  --text: #e4e9ee;          /* headings, figures */
+  --body: #dbe2e8;          /* running text */
+  --muted: #9fb0c0;         /* secondary text, labels, table heads, axis text */
+  --faint: #7a8ca1;         /* ticks, timestamps, notes (AA on every surface) */
+
+  /* accent and meaning */
+  --accent: #e5a75d;        /* sodium amber: active function, focus, links, GO */
+  --accent-soft: #f0c48e;   /* link hover */
+  --hazard: #c86f9a;        /* chart magenta: closures, hazards, the crisis line */
+  --up: #5dc38c;
+  --down: #e4716a;
+  --ref: #8796a8;           /* neutral context lines (past crises, other currencies) */
+
+  /* status, always paired with a word or an icon */
+  --good: #5dc38c;
+  --warn: #eeb758;
+  --serious: #de8c6d;
+  --crit: #e06a68;
+
+  /* categorical series (validated for colour-blind separation on --panel) */
+  --s1: #4688da;  /* blue    */
+  --s2: #d06138;  /* orange  */
+  --s3: #359b73;  /* aqua    */
+  --s4: #c2862b;  /* ochre   */
+  --s5: #cd5a82;  /* magenta */
+  --s6: #23811f;  /* green   */
+  --s7: #8f86de;  /* violet  */
+  --s8: #dc6d6c;  /* red     */
+
+  /* sequential (blue) and diverging (blue <-> red, grey midpoint) */
+  --seq-1: #1c4377; --seq-2: #2b5d9f; --seq-3: #3c7ac8; --seq-4: #6198da; --seq-5: #8eb6e6; --seq-6: #bbd3f0;
+  --div-neg: #4688da; --div-mid: #383835; --div-pos: #dc6d6c;
+
+  /* buttons and the monogram */
+  --btn-bg: var(--accent);
+  --btn-ink: #0b1016;
+  --btn-hover: #f0c48e;
+  --mark-disc: #0f2747;     /* the QuinInvestment navy, lifted a step to read on the night bar */
+  --mark-ink: #ffffff;
+
+  /* map: CARTO geometry in chart-display colours */
+  --map-sea: #08131d;
+  --map-land: #191a16;
+  --map-coast: #3a3a31;
+  --map-border: #34352d;
+  --map-label: #8a8d80;
+  --map-lane: #9c577a;
+}
+
+:root[data-theme="day"] {
+  color-scheme: light;
+
+  --bg: #e9edf0;
+  --panel: #fbfcfc;
+  --raised: #edf1f4;
+  --line: #d6dde3;
+  --line-strong: #b9c4ce;
+  --line-input: #7d8b99;
+
+  --text: #0e1a26;
+  --body: #1c2a37;
+  --muted: #3f5164;
+  --faint: #556779;
+
+  --accent: #925f29;
+  --accent-soft: #6f4518;
+  --hazard: #94436a;
+  --up: #31764d;
+  --down: #b33c3b;
+  --ref: #7d8b99;
+
+  --good: #31764d;
+  --warn: #8a6118;
+  --serious: #b6613c;
+  --crit: #a7392f;
+
+  --s1: #3679cd;
+  --s2: #e46e42;
+  --s3: #37ad7d;
+  --s4: #e8a332;
+  --s5: #e280a4;
+  --s6: #1f811c;
+  --s7: #6255cc;
+  --s8: #db534f;
+
+  --seq-1: #d0e2f7; --seq-2: #a4c5ec; --seq-3: #77a7e1; --seq-4: #4a88d6; --seq-5: #2b5d9f; --seq-6: #173763;
+  --div-neg: #3679cd; --div-mid: #f0efec; --div-pos: #db534f;
+
+  --btn-bg: var(--accent);
+  --btn-ink: #ffffff;
+  --btn-hover: #7a4d1f;
+  --mark-disc: #051d36;     /* the QuinInvestment navy */
+  --mark-ink: #ffffff;
+
+  --map-sea: #c9dbe6;
+  --map-land: #efe9d8;
+  --map-coast: #a9a28c;
+  --map-border: #b9b19a;
+  --map-label: #5b5848;
+  --map-lane: #994e74;
+}
+
+/* ---------------------------------------------------------------- roles
+   Names the modules use, mapped onto the surfaces and inks above. */
+:root {
+  --bg-0: var(--bg);
+  --bg-1: var(--panel);
+  --bg-2: var(--panel);
+  --bg-3: var(--raised);
+  --line-2: var(--line-strong);
+  --grid: var(--line);
+
+  --ink-1: var(--text);
+  --ink-2: var(--muted);
+  --ink-3: var(--faint);
+  --ink-inv: var(--btn-ink);
+
+  /* type */
+  --font-sans: "Hanken Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --t-11: 11px;
+  --t-12: 12px;
+  --t-13: 13px;
+  --t-14: 14px;
+  --t-16: 16px;
+  --t-18: 18px;
+  --t-21: 21px;
+  --t-24: 24px;
+  --t-32: 32px;
+  --t-44: 44px;
+
+  /* rhythm: square corners and 1 px rules everywhere */
+  --u: 4px;
+  --gap: 10px;
+  --pad: 12px;
+  --radius: 0;
+  --row: 44px;          /* grid row unit for panels */
+  --rail-w: 204px;
+  --top-h: 56px;
+  --tape-h: 42px;
+  --sb-h: 28px;
+}
